@@ -1,0 +1,114 @@
+{
+  "name": "BOIFiler API",
+  "description": "BOI (Beneficial Ownership Information) filing and entity lookup API. Search 500+ companies, lookup officers, check BOI compliance status, and retrieve detailed entity profiles with ownership structures.",
+  "version": "1.0.0",
+  "documentation": {
+    "url": "https://boifiler.com/docs",
+    "openapi": "/openapi.json",
+    "swagger": "/docs"
+  },
+  "auth": {
+    "type": "api_key",
+    "in": "header",
+    "name": "X-API-Key",
+    "also_accepted": ["X-RapidAPI-Proxy-Secret", "api_key_query_param"]
+  },
+  "rate_limiting": {
+    "requests_per_minute": 60,
+    "burst": 100,
+    "strategy": "sliding_window"
+  },
+  "pricing": {
+    "free_tier": {
+      "requests_per_month": 1000,
+      "rate_limit": 10,
+      "features": ["search", "entity_lookup", "compliance_check"]
+    },
+    "starter": {
+      "price_monthly": 49,
+      "requests_per_month": 10000,
+      "rate_limit": 60,
+      "features": ["all_endpoints", "officer_lookup", "priority_support"]
+    },
+    "professional": {
+      "price_monthly": 199,
+      "requests_per_month": 50000,
+      "rate_limit": 300,
+      "features": ["all_endpoints", "bulk_search", "cache_refresh", "api_support"]
+    },
+    "enterprise": {
+      "price_monthly": 999,
+      "requests_per_month": 500000,
+      "rate_limit": 1000,
+      "features": ["all_endpoints", "dedicated_support", "custom_integration", "sla"]
+    }
+  },
+  "endpoints": [
+    {
+      "path": "/v1/health",
+      "method": "GET",
+      "description": "Health check — verify the API is running",
+      "auth_required": false
+    },
+    {
+      "path": "/v1/search",
+      "method": "GET",
+      "description": "Search entities by name, EIN, officer name, state, NAICS code, or BOI status",
+      "parameters": {
+        "q": {"type": "string", "description": "General search query", "required": false},
+        "name": {"type": "string", "description": "Entity name filter", "required": false},
+        "ein": {"type": "string", "description": "EIN (full or partial)", "required": false},
+        "state": {"type": "string", "description": "2-letter state code", "required": false},
+        "boi_status": {"type": "string", "description": "filed, not_filed, exempt, required", "required": false},
+        "naics": {"type": "string", "description": "NAICS code", "required": false},
+        "limit": {"type": "integer", "default": 20, "max": 100},
+        "offset": {"type": "integer", "default": 0}
+      }
+    },
+    {
+      "path": "/v1/entity/{ein}",
+      "method": "GET",
+      "description": "Get detailed entity information by EIN",
+      "parameters": {
+        "ein": {"type": "string", "description": "Employer Identification Number", "required": true}
+      }
+    },
+    {
+      "path": "/v1/officer/{name}",
+      "method": "GET",
+      "description": "Lookup officers and find associated entities",
+      "parameters": {
+        "name": {"type": "string", "description": "Officer name (full or partial)", "required": true},
+        "limit": {"type": "integer"},
+        "offset": {"type": "integer"}
+      }
+    },
+    {
+      "path": "/v1/compliance-check",
+      "method": "GET",
+      "description": "Check BOI compliance status for an entity",
+      "parameters": {
+        "ein": {"type": "string", "description": "EIN for compliance check"},
+        "name": {"type": "string", "description": "Entity name for compliance check"}
+      }
+    },
+    {
+      "path": "/v1/stats",
+      "method": "GET",
+      "description": "Get API and data statistics"
+    }
+  ],
+  "data_sources": [
+    "SEC EDGAR filings",
+    "FinCEN BOI requirements database",
+    "State business registries",
+    "Curated entity dataset (500+ entities)"
+  ],
+  "use_cases": [
+    "BOI filing preparation and compliance checks",
+    "Entity due diligence and KYC verification",
+    "Officer and beneficial owner lookup",
+    "Corporate structure analysis",
+    "Business registry search"
+  ]
+}
